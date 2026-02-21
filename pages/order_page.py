@@ -23,32 +23,31 @@ class OrderPage(BasePage):
         self.set_value(OrderPageLocators.PHONE, data["phone"])
         self.click(OrderPageLocators.NEXT_BUTTON)
 
+    @allure.step("Выбрать цвет самоката: {color}")
+    def select_color(self, color: str):
+        color_locator = {
+            "black": OrderPageLocators.COLOR_BLACK,
+            "grey": OrderPageLocators.COLOR_GREY,
+        }
+        self.click(color_locator[color])
+
     @allure.step("Заполнить форму 'Про аренду'")
     def fill_rent_form(self, data: dict):
         self.click_if_present(MainPageLocators.COOKIES_BUTTON)
 
-        # ---- Дата ----
         self.click(OrderPageLocators.DATE)
         self.set_value(OrderPageLocators.DATE, data["date"])
         self.press_enter(OrderPageLocators.DATE)
 
-        # ---- Срок аренды ----
         self.click(OrderPageLocators.RENT_PERIOD)
         self.click(OrderPageLocators.DROPDOWN_OPTION(data["rent_period"]))
 
-        # ---- Цвет ----
-        if data["color"] == "black":
-            self.click(OrderPageLocators.COLOR_BLACK)
-        else:
-            self.click(OrderPageLocators.COLOR_GREY)
+        self.select_color(data["color"])
 
-        # ---- Комментарий ----
         self.set_value(OrderPageLocators.COMMENT, data["comment"])
 
-        # ---- Нажать "Заказать" ----
         self.click(OrderPageLocators.ORDER_BUTTON)
 
-        # ---- Подтвердить ----
         self.wait_visibility(OrderPageLocators.CONFIRM_YES)
         self.click(OrderPageLocators.CONFIRM_YES)
 

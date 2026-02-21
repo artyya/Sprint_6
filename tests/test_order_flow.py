@@ -8,22 +8,20 @@ from locators.main_page_locators import MainPageLocators
 
 class TestOrderFlow:
     @allure.title("Позитивный сценарий заказа самоката")
-    @allure.description("Полный e2e flow заказа с двумя точками входа и двумя наборами данных.")
+    @allure.description("Полный e2e flow заказа с двумя точками входа и двумя наборами данных")
     @pytest.mark.parametrize(
-        "entry_point, order_data",
+        "open_order_method, order_data",
         [
-            ("header", OrderData.user_1),
-            ("bottom", OrderData.user_2),
+            ("click_order_header", OrderData.user_1),
+            ("click_order_bottom", OrderData.user_2),
         ],
     )
-    def test_order_success(self, driver, entry_point, order_data):
+    def test_order_success(self, driver, open_order_method, order_data):
         main = MainPage(driver)
         main.click_if_present(MainPageLocators.COOKIES_BUTTON)
 
-        if entry_point == "header":
-            main.click_order_header()
-        else:
-            main.click_order_bottom()
+        # Открытие формы заказа без ветвления в тесте
+        getattr(main, open_order_method)()
 
         order = OrderPage(driver)
         order.fill_personal_form(order_data)
